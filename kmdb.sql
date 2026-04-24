@@ -95,13 +95,81 @@
 
 -- Drop existing tables, so you'll start fresh each time this script is run.
 -- TODO!
+DROP TABLE movies;
+DROP TABLE studios;
+DROP TABLE actors;
+DROP TABLE agents;
+DROP TABLE characters;
 
 -- Create new tables, according to your domain model
 -- TODO!
+CREATE TABLE movies (
+    id INTEGER PRIMARY KEY,
+    title TEXT,
+    year INTEGER,
+    MPAA TEXT,
+    studio_id INTEGER
+);
+
+CREATE TABLE studios (
+    id INTEGER PRIMARY KEY,
+    studio TEXT
+);
+
+CREATE TABLE actors (
+    id INTEGER PRIMARY KEY,
+    actor_name TEXT,
+    agent_id INTEGER
+);
+
+CREATE TABLE agents (
+    id INTEGER PRIMARY KEY,
+    agent_name TEXT
+);
+
+CREATE TABLE characters (
+    id INTEGER PRIMARY KEY,
+    name TEXT,
+    movie_id INTEGER,
+    actor_id INTEGER
+);
 
 -- Insert data into your database that reflects the sample data shown above
 -- Use hard-coded foreign key IDs when necessary
 -- TODO!
+INSERT INTO studios (id, studio)
+VALUES
+(1, 'Warner Bros.');
+
+INSERT INTO agents (id, agent_name)
+VALUES
+(1, 'Agent 1'),
+(2, 'Agent 2');
+
+INSERT INTO actors (id, actor_name, agent_id)
+VALUES
+(1, 'Christian Bale', 1),
+(2, 'Michael Caine', 1),
+(3, 'Heath Ledger', 2),
+(4, 'Gary Oldman', 2);
+
+INSERT INTO movies (id, title, year, MPAA, studio_id)
+VALUES
+(1, 'Batman Begins', 2005, 'PG-13', 1),
+(2, 'The Dark Knight', 2008, 'PG-13', 1),
+(3, 'The Dark Knight Rises', 2012, 'PG-13', 1);
+
+INSERT INTO characters (id, name, movie_id, actor_id)
+VALUES
+(1, 'Bruce Wayne', 1, 1),
+(2, 'Alfred', 1, 2),
+(3, 'Bruce Wayne', 2, 1),
+(4, 'Alfred', 2, 2),
+(5, 'Joker', 2, 3),
+(6, 'James Gordon', 2, 4),
+(7, 'Bruce Wayne', 3, 1),
+(8, 'Alfred', 3, 2),
+(9, 'James Gordon', 3, 4);
 
 -- Prints a header for the movies output
 .print "Movies"
@@ -110,6 +178,9 @@
 
 -- ***TODO!***
 -- The SQL statement for the movies output goes here.
+SELECT title, year, MPAA, studios.studio
+FROM movies
+INNER JOIN studios ON studios.id = movies.studio_id;
 
 -- Example output:
 -- Movies
@@ -126,6 +197,10 @@
 
 -- ***TODO!***
 -- The SQL statement for the cast output goes here.
+SELECT movies.title, actors.actor_name, name
+FROM characters
+INNER JOIN movies ON movies.id = characters.movie_id
+INNER JOIN actors ON actors.id = characters.actor_id;
 
 -- Example output:
 -- Top Cast
@@ -154,6 +229,10 @@
 
 -- ***TODO!***
 -- The SQL statement for the represented actor(s) output goes here.
+SELECT actor_name
+FROM actors
+INNER JOIN agents ON agents.id = actors.agent_id
+WHERE agents.agent_name = 'Agent 1';
 
 -- Example output:
 -- Represented by agent
